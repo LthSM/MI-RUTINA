@@ -1,0 +1,5 @@
+Mi Rutina PWA
+
+Para instalar como PWA debe publicarse en un hosting HTTPS (por ejemplo GitHub Pages). No basta abrir index.html directamente desde archivos: el service worker requiere HTTPS o localhost.
+
+Archivos: index.html, manifest.webmanifest, sw.js e iconos SVG.

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5b35a8">
+<title>Mi Rutina</title>
+<style>
+:root{--purple:#5b35a8;--purple2:#7549c7;--accent:#5b35a8;--accent2:#7549c7;--lav:#eee7ff;--bg:#f6f4fc;--text:#241b38;--muted:#716b80;--border:#ddd6ef}
+body.theme-blue{--purple:#087eaa;--purple2:#20a2cb;--accent:#087eaa;--accent2:#20a2cb;--lav:#dff5ff;--bg:#f0f8fc;--text:#173040;--muted:#647b88;--border:#cce4ef}
+body.theme-dark{--purple:#111318;--purple2:#333843;--accent:#b86f79;--accent2:#d18a91;--lav:#2a2d35;--bg:#15171c;--text:#f1f2f5;--muted:#a3a8b2;--border:#373b45}
+body.theme-dark .task,body.theme-dark .list-switch,body.theme-dark .modal,body.theme-dark .listrow{background:#22252c;color:var(--text);border-color:var(--border)}
+body.theme-dark .task.current{background:#34303f;border-color:#9b87ce}
+body.theme-dark .num{background:#373b45;color:#d7d9e0}
+body.theme-dark .current .num{background:#514466;color:#fff}
+body.theme-dark .status{background:#302b3a}
+body.theme-dark .actions button,body.theme-dark .controls button,body.theme-dark .prev,body.theme-dark .modal .secondary{background:#30343d;color:#d8dbe2}
+body.theme-dark input{background:#20232a;color:#fff;border-color:#454a55}
+body.theme-dark .viewport{color:var(--text)}
+body.theme-dark header{background:linear-gradient(120deg,#111318,#333843)}
+body.theme-blue header{background:linear-gradient(120deg,#056a91,#20a2cb)}
+body.theme-blue .task.current{background:#e2f6ff;border-color:#45b3d8}
+body.theme-blue .status{background:#e0f2fa}
+body.theme-blue .actions button,body.theme-blue .prev{background:#e1f4fb;color:#086e94}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text)}
+body.theme-purple{background:linear-gradient(160deg,#f5f2ff,#f7f8ff)}
+body.theme-blue{background:linear-gradient(160deg,#e7f7fd,#f0f8fc)}
+body.theme-dark{background:var(--bg)}
+body.theme-blue .list-switch,body.theme-blue .task,body.theme-blue .modal,body.theme-blue .listrow{background:#f9fdff;color:var(--text);border-color:var(--border)}
+body.theme-blue .task.current{background:#e2f6ff;border-color:#45b3d8}
+body.theme-blue .num{background:#e0f2fa;color:#27647c}
+body.theme-blue .status{background:#d8eff9;color:var(--text)}
+body.theme-blue .actions button,body.theme-blue .controls button,body.theme-blue .prev,body.theme-blue .modal .secondary{background:#e1f4fb;color:#086e94}
+body.theme-dark .counter,body.theme-dark .empty,body.theme-dark .status small{color:var(--muted)}
+body.theme-dark .taskname,body.theme-dark .list-switch,body.theme-dark .modal h2{color:var(--text)}
+body.theme-dark .status{color:var(--text)}
+body.theme-dark .modal-back{background:#0009}
+body.theme-dark .modal .danger{background:#512b35;color:#ffb7c4}
+.app{max-width:520px;margin:0 auto;min-height:100dvh;padding:0 14px 24px}
+header{margin:0 -14px;padding:17px 18px;background:linear-gradient(120deg,#4c2c91,#7549c7);color:#fff;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5;box-shadow:0 5px 18px #38206722}
+header .menu{font-size:23px;background:transparent;border:0;color:white}
+header h1{font-size:20px;margin:0;flex:1;text-align:center}
+header button{color:white;background:transparent;border:0;font-size:20px}
+.list-switch{width:100%;margin:16px 0 12px;border:1px solid var(--border);background:white;padding:12px 14px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;color:var(--text);font-weight:650}
+.counter{font-size:12px;color:var(--muted);text-align:center;margin:0 0 8px}
+.viewport{height:min(54dvh,470px);min-height:300px;overflow-y:auto;padding:6px 2px;scrollbar-width:thin;scroll-behavior:smooth;position:relative}
+.task{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e3def0;border-radius:15px;padding:11px 10px;margin:7px 0;box-shadow:0 3px 9px #4530740b;min-height:58px;transition:.18s}
+.task.current{border:2px solid #9467e8;background:#eee5ff;box-shadow:0 4px 14px #7042bc22}
+.num{width:32px;height:32px;border-radius:50%;background:#eceaf3;color:#666176;display:grid;place-items:center;font-weight:700;flex:none}
+.current .num{background:#d8c6ff;color:#4d248e}
+.taskname{flex:1;font-weight:650;overflow-wrap:anywhere}
+.pointer{color:var(--accent);font-size:22px;font-weight:900;width:24px;text-align:center;flex:none}
+.controls{display:flex;gap:5px}
+.controls button{border:0;background:#f3effa;border-radius:8px;padding:6px;color:#5e4a85;font-size:15px}
+.empty{color:var(--muted);text-align:center;padding:50px 18px}
+.status{margin:12px 0;background:#e9e1f8;border-radius:16px;padding:13px;display:flex;align-items:center;gap:10px}
+.status .emoji{font-size:25px}
+.status small{color:#655580;display:block}
+.status strong{font-size:18px}
+.nav{display:flex;gap:10px;margin:12px 0}
+.nav button{border:0;border-radius:15px;padding:15px 16px;font-weight:750;font-size:17px}
+.prev{background:#e7ddfa;color:#5a319d}
+.next{flex:1;background:linear-gradient(120deg,var(--accent),var(--accent2));color:white;box-shadow:0 5px 12px color-mix(in srgb,var(--accent) 18%,transparent)}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.actions button{background:#ece5fb;border:0;border-radius:13px;padding:12px 5px;color:#563294;font-weight:650}
+.actions button span{display:block;font-size:20px;margin-bottom:3px}
+.modal-back{position:fixed;inset:0;background:#20153777;display:none;align-items:flex-end;justify-content:center;z-index:20}
+.modal{background:#fff;width:min(520px,100%);border-radius:22px 22px 0 0;padding:20px 18px 28px;max-height:85dvh;overflow:auto}
+.modal h2{margin:0 0 14px}
+input{width:100%;border:1px solid #d8cfea;border-radius:12px;padding:13px;font-size:16px;margin:7px 0}
+.modal button{border:0;border-radius:12px;padding:12px 14px;background:#5b35a8;color:#fff;font-weight:700;margin:5px 0}
+.modal .secondary{background:#eee8f8;color:#50318a}
+.modal .danger{background:#fee9ed;color:#a52e45}
+.listrow{display:flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:13px;padding:11px;margin:8px 0}
+.listrow .info{flex:1}
+.listrow small{color:var(--muted)}
+@media(min-width:540px){.app{padding-bottom:35px}.viewport{height:440px}}
+
+/* Pulido visual v6: solo CSS, sin modificar la lógica */
+:root{--radius-card:18px;--shadow-soft:0 6px 20px rgba(35,24,65,.07)}
+body{min-height:100dvh;background-attachment:fixed}
+.app{padding-left:16px;padding-right:16px;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+header{margin-left:-16px;margin-right:-16px;padding:16px 18px;min-height:62px;backdrop-filter:blur(12px)}
+header h1{letter-spacing:.2px}
+header .menu,header button{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;transition:transform .12s,background .12s}
+header button:active{transform:scale(.94);background:#ffffff22}
+.list-switch{min-height:50px;padding:13px 15px;margin-top:17px;box-shadow:var(--shadow-soft);transition:transform .12s,border-color .12s}
+.list-switch:active{transform:scale(.99)}
+.counter{letter-spacing:.25px;font-weight:550;margin-bottom:10px}
+.viewport{height:min(53dvh,480px);min-height:290px;padding:7px 3px 10px;border-radius:20px;scroll-padding:20px}
+.task{border-radius:17px;padding:12px;min-height:64px;margin:8px 0;box-shadow:var(--shadow-soft);gap:11px}
+.task.current{border-width:2px;transform:scale(1.005);box-shadow:0 7px 18px color-mix(in srgb,var(--accent) 15%,transparent)}
+.num{width:34px;height:34px;font-size:13px}
+.taskname{line-height:1.3}
+.pointer{font-size:23px;filter:drop-shadow(0 1px 1px color-mix(in srgb,var(--accent) 15%,transparent))}
+.controls button{min-width:34px;min-height:32px;border-radius:10px}
+.status{border:1px solid color-mix(in srgb,var(--accent) 13%,var(--border));box-shadow:var(--shadow-soft);padding:14px 15px;border-radius:17px;margin:14px 0}
+.status .emoji{width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);display:grid;place-items:center}
+.status strong{line-height:1.25;overflow-wrap:anywhere}
+.nav{gap:9px;margin:13px 0}
+.nav button{min-height:54px;border-radius:16px;transition:transform .12s,filter .12s;box-shadow:var(--shadow-soft)}
+.nav button:active,.actions button:active{transform:scale(.98);filter:brightness(.97)}
+.prev{min-width:116px}
+.next{font-size:18px;letter-spacing:.1px}
+.actions{gap:9px;margin-top:12px}
+.actions button{min-height:64px;border-radius:15px;box-shadow:var(--shadow-soft);transition:transform .12s,filter .12s}
+.actions button span{font-size:21px}
+.modal-back{align-items:center;padding:12px}
+.modal{border-radius:24px;padding:21px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 20px 55px #160d2b40}
+.modal h2{font-size:21px;letter-spacing:.1px}
+.modal button{min-height:46px;border-radius:13px}
+input{border-radius:13px;background:color-mix(in srgb,var(--bg) 65%,white);color:var(--text)}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:3px solid color-mix(in srgb,var(--accent2) 45%,transparent);outline-offset:2px}
+body.theme-dark .status .emoji{background:#ffffff0c}
+body.theme-dark .actions button{background:#30343d;color:#e3d9f3}
+body.theme-dark .list-switch{box-shadow:0 6px 20px #0003}
+body.theme-dark .task{box-shadow:0 5px 16px #0002}
+@media(max-width:380px){.app{padding-left:12px;padding-right:12px}header{margin-left:-12px;margin-right:-12px}.actions{gap:6px}.actions button{padding:10px 3px;font-size:13px}.nav button{padding:13px 10px}.prev{min-width:104px}}
+@media(min-width:540px){.app{padding-bottom:38px}.viewport{height:450px}}
+
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#7549c7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-192.svg">
+</head>
+<body>
+<div class="app">
+<header><button class="menu" id="listsBtn" aria-label="Listas">☰</button><h1 id="title">Mi Rutina</h1><button id="renameBtn" title="Editar lista">⚙</button></header>
+<button class="list-switch" id="switcher"><span id="listName">Mi Rutina Diaria</span><span>▾</span></button>
+<p class="counter" id="counter"></p>
+<div class="viewport" id="viewport"></div>
+<div class="status"><span class="emoji">🎯</span><div><small>Actividad actual</small><strong id="currentText">—</strong></div><span style="margin-left:auto;color:var(--accent);font-weight:700" id="position"></span></div>
+<div class="nav"><button class="prev" id="prev">← Anterior</button><button class="next" id="next">Siguiente →</button></div>
+<div class="actions">
+<button id="add"><span>＋</span>Agregar</button>
+<button id="reorder"><span>↕</span>Reordenar</button>
+<button id="editList"><span>✎</span>Editar lista</button><button id="themeBtn"><span>🎨</span>Colores</button>
+</div>
+</div>
+<div class="modal-back" id="backdrop"><div class="modal" id="modal"></div></div>
+<script>
+const KEY='miRutinaPrototype_v1';
+let data=JSON.parse(localStorage.getItem(KEY)||'null')||{theme:'purple',lists:[{id:'l1',name:'Mi Rutina Diaria',items:['Estudiar','Entrenar','Limpiar','Ordenar cuarto','Proyecto','Reunión','Compras','Cocinar','Leer','Repasar','Planificar','Ver curso','Actividad 13','Actividad 14','Actividad 15','Actividad 16'],index:0},{id:'l2',name:'Estudio ENAM',items:['Medicina','Pediatría','Cirugía','Gineco-obstetricia'],index:0}],active:'l1'};
+if(!data.theme)data.theme='purple';
+let reorderMode=false;
+const $=id=>document.getElementById(id);
+function active(){return data.lists.find(x=>x.id===data.active)||data.lists[0]}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function applyTheme(){document.body.classList.remove('theme-purple','theme-blue','theme-dark');document.body.classList.add('theme-'+(data.theme||'purple'));}
+function themeModal(){modal(`<h2>🎨 Apariencia</h2><p>Elige el tema de colores de la aplicación.</p><button class="secondary" id="purpleTheme" style="width:100%;text-align:left">🟣 Morado</button><button class="secondary" id="blueTheme" style="width:100%;text-align:left">🔵 Azul cerúleo</button><button class="secondary" id="darkTheme" style="width:100%;text-align:left">⚫ Negro / oscuro</button><button class="secondary" id="cancel" style="width:100%">Cerrar</button>`);$('purpleTheme').onclick=()=>{data.theme='purple';applyTheme();save();close()};$('blueTheme').onclick=()=>{data.theme='blue';applyTheme();save();close()};$('darkTheme').onclick=()=>{data.theme='dark';applyTheme();save();close()};$('cancel').onclick=close}
+function render(){
+ applyTheme();
+ if(!data.lists.length){data.lists=[{id:'l'+Date.now(),name:'Mi lista',items:[],index:0}];data.active=data.lists[0].id}
+ let l=active(); if(l.index>=l.items.length)l.index=0;
+ $('title').textContent=l.name;$('listName').textContent=l.name;
+ $('counter').textContent=l.items.length?`Ciclo continuo · ${l.items.length} actividades`:'Agrega actividades para comenzar';
+ $('currentText').textContent=l.items[l.index]||'Sin actividades';$('position').textContent=l.items.length?`${l.index+1} de ${l.items.length}`:'';
+ const v=$('viewport');v.innerHTML='';
+ if(!l.items.length){v.innerHTML='<div class="empty">Tu lista está vacía.<br>Presiona <b>Agregar</b> para crear la primera actividad.</div>';return}
+ // Mantener el orden natural de la lista y resaltar la actividad actual
+ for(let step=0;step<l.items.length;step++){
+   const i=step;
+   const item=l.items[i], isCurrent=i===l.index;
+   let d=document.createElement('div');d.className='task'+(isCurrent?' current':'');
+   d.innerHTML=`<div class="num">${i+1}</div><div class="taskname"></div><div class="pointer">${isCurrent?'➜':''}</div><div class="controls"></div>`;
+   d.querySelector('.taskname').textContent=item;
+   if(reorderMode){
+     d.querySelector('.controls').innerHTML=`<button title="Subir">↑</button><button title="Bajar">↓</button>`;
+     let [up,down]=d.querySelectorAll('button');
+     up.onclick=()=>move(i,-1);down.onclick=()=>move(i,1);
+   }else{
+     d.querySelector('.controls').innerHTML=`<button title="Editar">⋯</button>`;
+     d.querySelector('button').onclick=()=>editItem(i);
+   }
+   v.appendChild(d);
+ }
+ // Desplazar suavemente la lista para ubicar la actividad actual cerca del centro
+ const currentEl=v.querySelector('.current');
+ if(currentEl) setTimeout(()=>{ currentEl.scrollIntoView({block:'center',behavior:'smooth'}); },30);
+ save();
+}
+function advance(n){let l=active();if(!l.items.length)return;l.index=(l.index+n+l.items.length)%l.items.length;render()}
+function modal(content){$('modal').innerHTML=content;$('backdrop').style.display='flex'}
+function close(){ $('backdrop').style.display='none'}
+$('backdrop').onclick=e=>{if(e.target===$('backdrop'))close()}
+$('next').onclick=()=>advance(1);$('prev').onclick=()=>advance(-1);
+$('add').onclick=()=>{modal(`<h2>Agregar actividad</h2><input id="newItem" placeholder="Nombre de la actividad"><button id="saveItem">Agregar</button><button class="secondary" id="cancel">Cancelar</button>`);$('saveItem').onclick=()=>{let val=$('newItem').value.trim();if(val){active().items.splice(active().index+1,0,val);close();render()}};$('newItem').focus();$('cancel').onclick=close}
+function editItem(i){modal(`<h2>Editar actividad</h2><input id="itemEdit" value="${escapeHtml(active().items[i])}"><button id="saveEdit">Guardar</button><button class="danger" id="deleteItem">Eliminar</button><button class="secondary" id="cancel">Cancelar</button>`);$('saveEdit').onclick=()=>{let val=$('itemEdit').value.trim();if(val){active().items[i]=val;close();render()}};$('deleteItem').onclick=()=>{let l=active();l.items.splice(i,1);if(l.index>=l.items.length)l.index=0;close();render()};$('cancel').onclick=close}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function move(i,d){let l=active(),j=i+d;if(j<0||j>=l.items.length)return;[l.items[i],l.items[j]]=[l.items[j],l.items[i]];if(l.index===i)l.index=j;else if(l.index===j)l.index=i;render()}
+$('reorder').onclick=()=>{reorderMode=!reorderMode;$('reorder').innerHTML=reorderMode?'<span>✓</span>Listo':'<span>↕</span>Reordenar';render()}
+function listModal(){modal(`<h2>Mis listas</h2>${data.lists.map(l=>`<div class="listrow"><div class="info"><b>${escapeHtml(l.name)}</b><br><small>${l.items.length} actividades · progreso guardado</small></div><button class="secondary" data-use="${l.id}">Abrir</button></div>`).join('')}<button id="createList">＋ Crear nueva lista</button><button class="secondary" id="exportBackup">⬇ Exportar copia de seguridad</button><button class="secondary" id="importBackup">⬆ Importar copia de seguridad</button><button class="secondary" id="closeLists">Cerrar</button>`);document.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{data.active=b.dataset.use;close();render()});$('createList').onclick=()=>{modal(`<h2>Nueva lista</h2><input id="listNew" placeholder="Nombre de la lista"><button id="make">Crear</button><button class="secondary" id="cancel">Cancelar</button>`);$('make').onclick=()=>{let name=$('listNew').value.trim();if(name){let l={id:'l'+Date.now(),name,items:[],index:0};data.lists.push(l);data.active=l.id;close();render()}};$('cancel').onclick=close};$('closeLists').onclick=close;
+$('exportBackup').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mi-rutina-respaldo.json';a.click();URL.revokeObjectURL(a.href)};
+$('importBackup').onclick=()=>{modal(`<h2>Importar respaldo</h2><p>Selecciona un archivo de respaldo JSON de Mi Rutina.</p><input type="file" id="backupFile" accept=".json,application/json"><button id="doImport">Importar</button><button class="secondary" id="cancel">Cancelar</button>`);$('doImport').onclick=async()=>{const f=$('backupFile').files[0];if(!f){alert('Selecciona un archivo.');return}try{const imported=JSON.parse(await f.text());if(!Array.isArray(imported.lists)||!imported.lists.length)throw new Error('Formato inválido');data=imported;save();close();render();alert('Respaldo importado correctamente.')}catch(e){alert('No se pudo importar: el archivo no parece un respaldo válido.')}};$('cancel').onclick=close};
+}
+$('listsBtn').onclick=listModal;$('switcher').onclick=listModal;
+function rename(){let l=active();modal(`<h2>Editar lista</h2><input id="listNameEdit" value="${escapeHtml(l.name)}"><button id="renameSave">Guardar nombre</button><button class="danger" id="deleteList">Eliminar lista</button><button class="secondary" id="cancel">Cancelar</button>`);$('renameSave').onclick=()=>{let n=$('listNameEdit').value.trim();if(n){l.name=n;close();render()}};$('deleteList').onclick=()=>{if(data.lists.length===1){alert('Debe existir al menos una lista.');return}data.lists=data.lists.filter(x=>x.id!==l.id);data.active=data.lists[0].id;close();render()};$('cancel').onclick=close}
+$('renameBtn').onclick=rename;$('editList').onclick=rename;$('themeBtn').onclick=themeModal;
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>
